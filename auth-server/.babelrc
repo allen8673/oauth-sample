@@ -1,0 +1,29 @@
+{
+    "presets": [
+        "@babel/preset-env"
+    ],
+    "plugins": [
+        "@babel/plugin-proposal-private-methods",
+        [
+            "module-resolver",
+            {
+                "root": [
+                    "."
+                ],
+                "alias": {
+                    "@root": "."
+                }
+            }
+        ]
+    ],
+    "ignore": [
+        "node_modules",
+        "client"
+    ],
+    "env": {
+        "debug": {
+            "sourceMaps": "inline",
+            "retainLines": true
+        }
+    }
+}
