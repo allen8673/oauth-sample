@@ -5,7 +5,6 @@ const router = express.Router();
 const DebugControl = require('../utilities/debug.js')
 
 router.get('/', (req, res) => {
-    // res.sendFile(path.join(__dirname, '../public/oauthAuthenticate.html'))
     res.sendFile(path.join(__dirname, '../client/build', 'index.html'))
 });
 
@@ -17,7 +16,7 @@ router.post('/authorize',
         // TODO: QYERY USER PROFILE
         if (username && password) {
         // if (username === 'username' && password === 'password') {
-            req.body.user = { user: 1 }
+            req.body.user = { username: 'user', id: 1, email:'test@mail.com'}
             return next()
         }
         // TODO-END: QYERY USER PROFILE
