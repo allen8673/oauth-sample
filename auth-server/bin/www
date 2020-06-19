@@ -77,11 +77,21 @@ function onError(error) {
   }
 }
 
+var model = require('../models');
 /**
  * Event listener for HTTP server "listening" event.
  */
 
 function onListening() {
+  model.user.create({
+    clientId:'123',
+    clientSecret: '456'
+  }).then(()=>{
+    console.log('aa')
+  }).catch(function (err) {
+    console.log("getAccessToken - Err: ")
+  });
+
   var addr = server.address();
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr

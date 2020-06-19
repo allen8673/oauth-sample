@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+  auth-server:
+    image: auth-server
+    build: .
+    environment:
+      NODE_ENV: development
+    ports:
+      - 3030
+      - 9229:9229
+    command: node --inspect=0.0.0.0:9229 ./bin/www
