@@ -52,6 +52,7 @@ module.exports = {
         if (!client) return false;
         // return client;
         return {
+          id: client.id,
           clientId: client.clientId,
           clientSecret: client.clientSecret,
           grants: client.grants.map(g => g.grant),
@@ -89,22 +90,18 @@ module.exports = {
           token.client_id = client.id;
           token.user_id = user.id;
           token.save();
-          return token;
-          
+
+          return {
+            accessToken: token.accessToken,
+            accessTokenExpiresAt: token.accessTokenExpiresAt,
+            refreshToken: token.refreshToken, // NOTE this is only needed if you need refresh tokens down the line
+            refreshTokenExpiresAt: token.refreshTokenExpiresAt,
+            client: client,
+            user: user,
+          };
         }).catch(function (err) {
           console.log("getClient - Err: ", err)
         });
-
-    // db.token = {
-    //   accessToken: token.accessToken,
-    //   accessTokenExpiresAt: token.accessTokenExpiresAt,
-    //   refreshToken: token.refreshToken, // NOTE this is only needed if you need refresh tokens down the line
-    //   refreshTokenExpiresAt: token.refreshTokenExpiresAt,
-    //   client: client,
-    //   user: user,
-    // }
-    // return new Promise(resolve => resolve(db.token))
-
   },
   getAccessToken: token => {
     /* This is where you select the token from the database where the code matches */
@@ -115,8 +112,18 @@ module.exports = {
       ]
     })
 
-    if (!token || token === 'undefined') return false
-    return new Promise(resolve => resolve(db.token))
+    return sqldb.token.findOne({
+      where: {
+        accessToken: token
+      },
+      include: ['client', 'user']
+    }).then(tk=>{
+      if (!tk || tk === 'undefined') return false
+      return tk 
+    }).catch(function (err) {
+      console.log("getClient - Err: ", err)
+    });
+
   },
   getRefreshToken: token => {
     /* Retrieves the token from the database */
@@ -150,15 +157,18 @@ module.exports = {
         { name: 'user', value: user },
       ],
     })
-    db.authorizationCode = {
+
+    return sqldb.authorizationCode.create({
       authorizationCode: code.authorizationCode,
       expiresAt: code.expiresAt,
-      client: client,
-      user: user,
-    }
-    return new Promise(resolve => resolve(Object.assign({
-      redirectUri: `${code.redirectUri}`,
-    }, db.authorizationCode)))
+    }).then(authcode => {
+      authcode.client_id = client.id;
+      authcode.user_id = user.id;
+      authcode.save();
+      return authcode;
+    }).catch(function (err) {
+      console.log("getClient - Err: ", err)
+    });
   },
   getAuthorizationCode: authorizationCode => {
     /* this is where we fetch the stored data from the code */
@@ -168,9 +178,18 @@ module.exports = {
         { name: 'authorizationCode', value: authorizationCode },
       ],
     })
-    return new Promise(resolve => {
-      resolve(db.authorizationCode)
-    })
+
+    return sqldb.authorizationCode
+      .findOne(
+        {
+          where: { authorizationCode },
+          include: ['client', 'user']
+        })
+      .then(authCode => {
+        return authCode;
+      }).catch(function (err) {
+        console.log("getClient - Err: ", err)
+      });
   },
   revokeAuthorizationCode: authorizationCode => {
     /* This is where we delete codes */
@@ -180,15 +199,17 @@ module.exports = {
         { name: 'authorizationCode', value: authorizationCode },
       ],
     })
-    db.authorizationCode = { // DB Delete in this in memory example :)
-      authorizationCode: '', // A string that contains the code
-      expiresAt: new Date(), // A date when the code expires
-      redirectUri: '', // A string of where to redirect to with this code
-      client: null, // See the client section
-      user: null, // Whatever you want... This is where you can be flexible with the protocol
-    }
-    const codeWasFoundAndDeleted = true  // Return true if code found and deleted, false otherwise
-    return new Promise(resolve => resolve(codeWasFoundAndDeleted))
+    return sqldb.authorizationCode.findOne({
+      where: {
+        id: authorizationCode.id
+      }
+    }).then(authcode => {
+      authcode.destroy();
+      const codeWasFoundAndDeleted = true  // Return true if code found and deleted, false otherwise
+      return codeWasFoundAndDeleted
+    }).catch(function (err) {
+      console.log("getClient - Err: ", err)
+    });
   },
   verifyScope: (token, scope) => {
     /* This is where we check to make sure the client has access to this scope */

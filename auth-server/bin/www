@@ -84,7 +84,7 @@ var model = require('../models');
 
 function onListening() {
 
-  // init client data
+  // init client test data
   // model.client.create(
   //   {
   //     clientId: 'myClientId',
@@ -103,6 +103,19 @@ function onListening() {
   //       model.client.hasmany.grant,
   //       model.client.hasmany.redirect_uri,
   //     ]
+  //   })
+
+  // init user test data
+  // model.user.create(
+  //   {
+  //     username:'username',
+  //     password:'password'
+  //   },
+  //   {
+  //     // include: [
+  //     //   model.client.hasmany.grant,
+  //     //   model.client.hasmany.redirect_uri,
+  //     // ]
   //   })
 
 
