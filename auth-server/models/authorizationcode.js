@@ -7,8 +7,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   authorizationCode.associate = function(models) {
     // associations can be defined here
-    authorizationCode.hasOne(models.client)
-    authorizationCode.hasOne(models.user)
+    authorizationCode.belongsTo(models.client, {foreignKey: 'client_id'})
+    authorizationCode.belongsTo(models.user, {foreignKey: 'user_id'})
   };
   return authorizationCode;
 };

@@ -34,11 +34,11 @@ module.exports = {
   down: (queryInterface, Sequelize) => {
     return queryInterface.removeColumn(
       'grants',
-      'clientRef',
+      'client_id',
     ).then(() => {
       return queryInterface.removeColumn(
-        'grants',
-        'clientRef',
+        'redirect_uris',
+        'client_id',
       )
     });
   }

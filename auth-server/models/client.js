@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   const client = sequelize.define('client', {
     clientId: {
       type: DataTypes.STRING,
-      primaryKey: true,
+      primaryKey: false,
       allowNull: false,
       autoIncrement: false,
     },
@@ -11,8 +11,13 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   client.associate = function (models) {
     // associations can be defined here
-    client.hasMany(models.grant)
-    client.hasMany(models.redirect_uri)
+    client.hasMany(models.grant, { foreignKey: 'client_id' })
+    client.hasMany(models.redirect_uri, { foreignKey: 'client_id' })
+
+    client.hasmany = {
+      grant: client.hasMany(models.grant, { foreignKey: 'client_id' }),
+      redirect_uri: client.hasMany(models.redirect_uri, { foreignKey: 'client_id' })
+    }
   };
   return client;
 };

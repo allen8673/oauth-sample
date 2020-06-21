@@ -24,6 +24,9 @@ const db = { // Here is a fast overview of what your db model should look like
     user: null, // User associated with this token
   },
 }
+
+const sqldb = require('../models');
+
 // TODO-END: CONNECT TO DB
 
 
@@ -37,16 +40,28 @@ module.exports = {
         { name: 'clientSecret', value: clientSecret },
       ]
     })
-    db.client = { // Retrieved from the database
-      clientId: clientId,
-      clientSecret: clientSecret,
-      grants: ['authorization_code', 'refresh_token'],
-      redirectUris: ['http://localhost:3030/client/app', 'http://localhost:3000/auth/callback'],
-    }
-    return new Promise(resolve => {
-      resolve(db.client)
-    })
+
+    return sqldb.client
+      .findOne({
+        where: {
+          clientId: clientId,
+          // clientSecret: clientSecret
+        },
+        include: ['grants', 'redirect_uris']
+      }).then(client => {
+        if (!client) return false;
+        // return client;
+        return {
+          clientId: client.clientId,
+          clientSecret: client.clientSecret,
+          grants: client.grants.map(g => g.grant),
+          redirectUris: client.redirect_uris.map(g => g.uri),
+        };
+      }).catch(function (err) {
+        console.log("getClient - Err: ", err)
+      });
   },
+
   saveToken: (token, client, user) => {
     /* This is where you insert the token into the database */
     log({
@@ -57,15 +72,38 @@ module.exports = {
         { name: 'user', value: user },
       ],
     })
-    db.token = {
-      accessToken: token.accessToken,
-      accessTokenExpiresAt: token.accessTokenExpiresAt,
-      refreshToken: token.refreshToken, // NOTE this is only needed if you need refresh tokens down the line
-      refreshTokenExpiresAt: token.refreshTokenExpiresAt,
-      client: client,
-      user: user,
-    }
-    return new Promise(resolve => resolve(db.token))
+
+    return sqldb.token
+      .create(
+        {
+          accessToken: token.accessToken,
+          accessTokenExpiresAt: token.accessTokenExpiresAt,
+          refreshToken: token.refreshToken, // NOTE this is only needed if you need refresh tokens down the line
+          refreshTokenExpiresAt: token.refreshTokenExpiresAt,
+        },
+        {
+          // include: [
+          //   sqldb.token.belongs
+          // ]
+        }).then(token => {
+          token.client_id = client.id;
+          token.user_id = user.id;
+          token.save();
+          return token;
+          
+        }).catch(function (err) {
+          console.log("getClient - Err: ", err)
+        });
+
+    // db.token = {
+    //   accessToken: token.accessToken,
+    //   accessTokenExpiresAt: token.accessTokenExpiresAt,
+    //   refreshToken: token.refreshToken, // NOTE this is only needed if you need refresh tokens down the line
+    //   refreshTokenExpiresAt: token.refreshTokenExpiresAt,
+    //   client: client,
+    //   user: user,
+    // }
+    // return new Promise(resolve => resolve(db.token))
 
   },
   getAccessToken: token => {
@@ -76,6 +114,7 @@ module.exports = {
         { name: 'token', value: token },
       ]
     })
+
     if (!token || token === 'undefined') return false
     return new Promise(resolve => resolve(db.token))
   },

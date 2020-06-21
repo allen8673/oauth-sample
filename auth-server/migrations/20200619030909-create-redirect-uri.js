@@ -1,21 +1,14 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('clients', {
+    return queryInterface.createTable('redirect_uris', {
       id: {
-        type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        unique: true,
+        type: Sequelize.INTEGER
       },
-      clientId: {
-        type: Sequelize.STRING,
-        primaryKey: true,
-        allowNull: false,
-        autoIncrement: false,
-      },
-      clientSecret: {
+      uri: {
         type: Sequelize.STRING
       },
       createdAt: {
@@ -29,6 +22,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('clients');
+    return queryInterface.dropTable('redirect_uris');
   }
 };

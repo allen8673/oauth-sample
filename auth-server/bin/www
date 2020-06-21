@@ -83,14 +83,72 @@ var model = require('../models');
  */
 
 function onListening() {
-  model.user.create({
-    clientId:'123',
-    clientSecret: '456'
-  }).then(()=>{
-    console.log('aa')
-  }).catch(function (err) {
-    console.log("getAccessToken - Err: ")
-  });
+
+  // init client data
+  // model.client.create(
+  //   {
+  //     clientId: 'myClientId',
+  //     clientSecret: 'myClientSecret',
+  //     grants: [
+  //       { grant: 'authorization_code' },
+  //       { grant: 'refresh_token' }
+  //     ],
+  //     redirect_uris: [
+  //       { uri: 'uri_1' },
+  //       { uri: 'uri_2' }
+  //     ]
+  //   },
+  //   {
+  //     include: [
+  //       model.client.hasmany.grant,
+  //       model.client.hasmany.redirect_uri,
+  //     ]
+  //   })
+
+
+  // model.client
+  //   // .findAll()
+  //   .findByPk(1)
+  //   .then((client) => {
+  //     console.log('client', client)
+
+  //     model.token
+  //       .findAll({ include: 'client' })
+  //       // .findByPk(6)
+  //       .then((token) => {
+  //         // token.client_id=client.id
+  //         // token.save().then(tk=>{
+  //         //   console
+  //         // })
+  //         console.log('token', token)
+  //       });
+
+  //     model.token.create({
+  //       accessToken: '123',
+  //       accessTokenExpiresAt: new Date('2022/2/2'),
+  //       // client: data[0]
+  //       client: {
+  //         clientId: 'PPP',
+  //         clientSecret: '555'
+  //       }
+  //     },
+  //       {
+  //         include: [
+  //           model.token.belongs.client
+  //           // model.token.belongsTo(model.client, { foreignKey: 'client_id' })
+  //         ]
+  //       }
+  //     ).then((data) => {
+  //       console.log('aa')
+  //     }).catch(function (err) {
+  //       console.log("getAccessToken - Err: ")
+  //     });
+  //   });
+
+
+
+
+
 
   var addr = server.address();
   var bind = typeof addr === 'string'
