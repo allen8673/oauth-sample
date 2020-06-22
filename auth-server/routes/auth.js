@@ -38,25 +38,6 @@ router.post('/authorize',
         }).catch(function (err) {
             console.log("getClient - Err: ", err)
         });
-
-        // TODO: QYERY USER PROFILE
-        // if (username && password) {
-        //     // if (username === 'username' && password === 'password') {
-
-        //     // req.body.user = { username: 'user', id: 1, email:'test@mail.com'}
-        //     return next()
-        // }
-        // // TODO-END: QYERY USER PROFILE
-        // const params = [ // Send params back down
-        //     'client_id',
-        //     'redirect_uri',
-        //     'response_type',
-        //     'grant_type',
-        //     'state',
-        // ]
-        //     .map(a => `${a}=${req.body[a]}`)
-        //     .join('&')
-        // return res.redirect(`/oauth?${params}`)
     },
     (req, res, next) => {
         DebugControl.log.flow('Authorization')

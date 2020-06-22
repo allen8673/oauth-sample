@@ -86,10 +86,10 @@ module.exports = {
           // include: [
           //   sqldb.token.belongs
           // ]
-        }).then(token => {
+        }).then(async token => {
           token.client_id = client.id;
           token.user_id = user.id;
-          token.save();
+          await token.save();
 
           return {
             accessToken: token.accessToken,
@@ -119,7 +119,8 @@ module.exports = {
       include: ['client', 'user']
     }).then(tk=>{
       if (!tk || tk === 'undefined') return false
-      return tk 
+      // console.log('return token', tk)
+      return tk
     }).catch(function (err) {
       console.log("getClient - Err: ", err)
     });

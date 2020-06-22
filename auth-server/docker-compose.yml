@@ -8,8 +8,5 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3030
-      # AUTH_DB_NAME: oauth
-      # AUTH_DB_USERNAME: wistron
-      # AUTH_DB_PASSWORD: wistron1234
     ports:
-      - 3030
+      - 3030:3030

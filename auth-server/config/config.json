@@ -17,11 +17,12 @@
     "operatorsAliases": false
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
-    "dialect": "mysql",
-    "operatorsAliases": false
+    "username": "wistron",
+    "password": "wistron1234",
+    "database": "oauth",
+    "host": "107.167.186.216",
+    "dialect": "postgres",
+    "operatorsAliases": false,
+    "port": "5432"
   }
 }
