@@ -5,6 +5,11 @@ const router = express.Router();
 const DebugControl = require('../utilities/debug.js')
 var model = require('../models');
 
+router.all('*', (req, res, next)=>{
+    console.log('oauth', req);
+    next();
+} )
+
 router.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build', 'index.html'))
 });
