@@ -12,11 +12,12 @@ app.use(bodyParser.json());
 // SETUP DEBUG CTRL
 app.use(DebugControl.log.request())
 
+// navigation the root url to published web 
 app.use(express.static(path.join(__dirname, 'client/build')))
 
 app.use(require('./routes'))
 
-app.use('/', (req,res) => res.redirect('/oauth'))
+// app.use('/', (req,res) => res.redirect('/oauth'))
 // app.use(cookieParser())
 
 module.exports = app;
